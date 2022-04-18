@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour
 {   
-    public int hitPoints { get; private set; }
-    public static int points { get; private set; }
+    public int hitPoints { get; protected set; }
+    public int points { get; protected set; }
 
-    [SerializeField] Material hitMaterial;
-    private Material _brickMaterial;
-    private Renderer _renderer;
+    [SerializeField] protected Material hitMaterial;
+    private protected Material _brickMaterial;
+    private protected Renderer _renderer;
+
+    private protected GameManager _gameManager;
 
     void Start()
     {
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         _renderer = GetComponent<Renderer>();
         _brickMaterial = _renderer.sharedMaterial;
         hitPoints = 2;
+        points = 10;
     }
 
     // Update is called once per frame
@@ -32,6 +36,7 @@ public class Brick : MonoBehaviour
 
         if(hitPoints <= 0)
         {
+            
             DestroySelf();
         }
 
@@ -40,17 +45,18 @@ public class Brick : MonoBehaviour
 
     }
 
-    public virtual void DestroySelf()
+    protected private virtual void DestroySelf()
     {
+        _gameManager.UpdateScore(points);
         Destroy(gameObject);
     }
 
-    public virtual void ChangeMaterial(Material material)
+    protected void ChangeMaterial(Material material)
     {
         _renderer.sharedMaterial = material;
     }
 
-    public virtual void RestoreMaterial()
+    protected void RestoreMaterial()
     {
         _renderer.sharedMaterial = _brickMaterial;
     }
